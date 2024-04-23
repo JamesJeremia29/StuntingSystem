@@ -89,7 +89,7 @@ void setup() {
   time = millis() - time;
   Serial.println(time, DEC);
   delay(500);
-  tft.setRotation(1);
+  tft.setRotation(2);
 
   //Ultrasonic sensor init
   pinMode(ECHO_PIN, INPUT);
@@ -107,7 +107,7 @@ void setup() {
   Serial.println(scale.get_value(5));   // print the average of 5 readings from the ADC minus the tare weight (not set yet)
   Serial.print("get units: \t\t");
   Serial.println(scale.get_units(5), 1);  // print the average of 5 readings from the ADC minus tare weight (not set) divided
-  scale.set_scale(97.72);
+  scale.set_scale(105.12);
   scale.tare();               // reset the scale to 0
   Serial.println("After setting up the scale:");
   Serial.print("read: \t\t");
@@ -233,9 +233,9 @@ void loop() {
           inputManual(weightManual);
           float manualWeight = liveInput.toFloat();
           tftPrint("Berat Badan:", manualWeight, "kg");
-          drawText("# to continue, input weight to edit", ST77XX_WHITE, 3, 100, 1);
         }
       }
+      drawText("# to continue, input weight to edit", ST77XX_WHITE, 3, 100, 1);
     }
     tftPrint("Berat Badan:", currentWeight, "kg");
     delay(2000);
@@ -266,9 +266,9 @@ void loop() {
           inputManual(heightManual);
           float manualHeight = liveInput.toFloat();
           tftPrint("Tinggi Badan:", manualHeight, "cm");
-          drawText("# to continue, input height to edit", ST77XX_WHITE, 3, 100, 1);
         }
       }
+      drawText("# to continue, input height to edit", ST77XX_WHITE, 3, 100, 1);
     }
     tftPrint("Tinggi Badan:", currentHeight, "cm");
     delay(2000);
@@ -289,7 +289,7 @@ void loop() {
     tftPrint("Lingkar Kepala:", currentHead, "cm");
     while (keypad.getKey() != '#') {
       delay(500);
-      drawText("# to finish, D to restart", ST77XX_WHITE, 3, 100, 1);
+      drawText("# to finish", ST77XX_WHITE, 3, 100, 1);
     }
     printSummary();
 
@@ -522,7 +522,8 @@ void tftPrint(String text, float data, String unit) {
   tft.setTextColor(ST77XX_WHITE);
   tft.setTextSize(2);
   tft.println(text);
-  tft.setTextSize(3);
+  tft.setCursor(3, 75);
+  tft.setTextSize(2);
   tft.setTextColor(ST77XX_GREEN);
   tft.println(String(data) + unit);
 }
