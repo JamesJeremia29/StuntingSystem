@@ -65,6 +65,7 @@ float currentHeight = 0.0;
 #define TFT_DC         15
 Adafruit_ST7735 tft = Adafruit_ST7735(TFT_CS, TFT_DC, TFT_RST);
 String displayNama = "";
+String result = "";
 
 // Firebase Configuration
 FirebaseData fbdo;
@@ -295,6 +296,15 @@ void loop() {
 
     updateData(documentPath);
     delay(3000);
+    tft.fillScreen(ST77XX_BLACK);
+    drawText("Calculating...", ST77XX_WHITE, 3, 5, 2);
+    delay(3000);
+    tft.fillScreen(ST77XX_BLACK);
+    fetchData(collectionPath, uid);
+    char resultBuffer[result.length() + 1];
+    result.toCharArray(resultBuffer, result.length() + 1); 
+    drawText(resultBuffer, ST77XX_WHITE, 3, 5, 2);
+    delay(5000);
     uid = " ";
     isUserRegistered = false;
   }
@@ -455,6 +465,16 @@ void fetchData(String collection, String documentId) {
                         Serial.println(namaValue);
                     }
                 }
+                if (fields.containsKey("hasil")) {
+                    JsonObject hasilObject = fields["hasil"];
+
+                    if (hasilObject.containsKey("stringValue")) {
+                        String hasilValue = hasilObject["stringValue"].as<String>();
+                        result = hasilValue;
+                        Serial.print("Hasil value: ");
+                        Serial.println(hasilValue);
+                    }
+                }
             }
         }
     } else {
@@ -531,31 +551,34 @@ void tftPrint(String text, float data, String unit) {
 void printSummary() {
   uint16_t titleColor = ST77XX_WHITE;
   uint16_t bodyColor = ST77XX_GREEN;
-  tft.setCursor(0, 5);
+  tft.setCursor(3, 5);
   tft.fillScreen(ST77XX_BLACK);
 
   tft.setTextColor(titleColor);
-  tft.setTextSize(2);
+  tft.setTextSize(1);
   tft.println("Data Summary");
-  tft.println(" ");
   tft.setTextColor(titleColor);
+  tft.setCursor(3, 30);
   tft.setTextSize(1);
   tft.println("Berat Badan:");
+  tft.setCursor(3, 40);
   tft.setTextSize(1);
   tft.setTextColor(bodyColor);
   tft.println(String(currentWeight) + "kg");
-  tft.println(" ");
+  tft.setCursor(3, 60);
   tft.setTextColor(titleColor);
   tft.setTextSize(1);
   tft.println("Tinggi Badan:");
   tft.setTextSize(1);
+  tft.setCursor(3, 70);
   tft.setTextColor(bodyColor);
   tft.println(String(currentHeight) + "cm");
-  tft.println(" ");
+  tft.setCursor(3, 90);
   tft.setTextColor(titleColor);
   tft.setTextSize(1);
   tft.println("Lingkar Kepala:");
   tft.setTextSize(1);
+  tft.setCursor(3, 100);
   tft.setTextColor(bodyColor);
   tft.println(String(currentHead) + "cm");
 }
